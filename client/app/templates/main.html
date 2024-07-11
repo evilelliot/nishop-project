@@ -1,0 +1,87 @@
+<!-- templates/main.html -->
+{% extends 'index.html' %}
+
+{% block title %}Nishop - E-commerce{% endblock %}
+
+{% block content %}
+{% include 'components/landing_component.html' %}
+<div class="container mx-auto py-8">
+    {% include 'components/categories_navigation.html' %}
+    <!-- Filtros en dropdown -->
+    <div class="flex items-center justify-between mb-6">
+        <div class="relative inline-block text-left">
+            <div>
+                <button type="button" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" id="filters_dropdown" aria-haspopup="true" aria-expanded="false">
+                    Filtros
+                    <!-- Icono de flecha abajo -->
+                    <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 0 1 .707.293l3 3a1 1 0 0 1-1.414 1.414L10 5.414 7.707 7.707a1 1 0 0 1-1.414-1.414l3-3A1 1 0 0 1 10 3z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+            <!-- Dropdown panel, oculto por defecto -->
+            <div id="filters_dropdown_panel" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden" role="menu" aria-orientation="vertical" aria-labelledby="filters_dropdown">
+                <div class="py-1" role="none">
+                    <!-- Filtro por categoría -->
+                    <label for="category" class="block text-sm font-medium text-gray-700">Categoría:</label>
+                    <select id="category" name="category" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                        <option value="">Todas las categorías</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <!-- Filtro por precio mínimo -->
+                    <label for="min_price" class="block mt-4 text-sm font-medium text-gray-700">Precio mínimo:</label>
+                    <input type="number" id="min_price" name="min_price" min="0" step="0.01" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 sm:text-sm">
+                    <!-- Botón de aplicar filtro -->
+                    <div class="mt-4">
+                        <button type="button" id="apply_filters" class="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-300 dark:focus:ring-cyan-800">
+                            Aplicar Filtro
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de productos -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for product in products %}
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ product.name }}</h2>
+            <p class="text-gray-600 mb-4">{{ product.description }}</p>
+            <hr class="mt-2 mb-2">
+            <div class="flex items-center justify-between">
+                <p class="text-gray-700 font-bold mb-2">${{ product.price }}</p>
+                <a href="/products/{{ product.id }}" class="px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-2 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 rounded-lg">Añadir al carrito</a>
+            </div>
+            <p class="text-gray-700 mb-2">Stock: {{ product.stock }}</p>
+            <p class="text-gray-500 text-sm">Categoría: {{ product.category_id }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    // JavaScript para controlar la apertura y cierre del dropdown de filtros
+    const dropdownButton = document.getElementById('filters_dropdown');
+    const dropdownPanel = document.getElementById('filters_dropdown_panel');
+
+    dropdownButton.addEventListener('click', function () {
+        const expanded = this.getAttribute('aria-expanded') === 'true' || false;
+        this.setAttribute('aria-expanded', !expanded);
+        dropdownPanel.classList.toggle('hidden');
+    });
+
+    // JavaScript para aplicar filtros (debe implementarse según la lógica de tu aplicación)
+    const applyFiltersButton = document.getElementById('apply_filters');
+    applyFiltersButton.addEventListener('click', function () {
+        // Lógica para aplicar los filtros y actualizar la lista de productos
+        // Debe usar Axios u otra librería para hacer una solicitud GET con parámetros de filtro
+        // Ejemplo: axios.get('/api/products', { params: { category: selectedCategory, minPrice: minPrice } })
+        // .then(response => { actualizarProductos(response.data); })
+        // .catch(error => { manejarError(error); });
+    });
+</script>
+
+{% endblock %}

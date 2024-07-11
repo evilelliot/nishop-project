@@ -1,0 +1,7 @@
+<!-- Barra de navegación horizontal para categorías -->
+<h1 class="text-3xl font-bold mb-4">Categorías</h1>
+<div class="flex flex-wrap mb-4">
+    {% for category in categories %}
+    <a href="" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold mr-4 mb-2 px-4 py-2 rounded-lg">{{ category.name }}</a>
+    {% endfor %}
+</div>

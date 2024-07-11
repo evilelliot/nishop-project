@@ -1,0 +1,74 @@
+<!-- templates/product.html -->
+{% extends 'index.html' %}
+
+{% block title %}{{ data.name }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-8">
+    <div class="bg-white rounded-lg shadow-md p-4">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ data.name }}</h1>
+        <p class="text-gray-600 mb-4">{{ data.description }}</p>
+        <p class="text-gray-700 font-bold mb-2">Precio: ${{ data.price }}</p>
+        <p class="text-gray-700 mb-2">Stock: {{ data.stock }}</p>
+        <p class="text-gray-500 text-sm">Categoría: {{ data.category_id }}</p>
+        <p class="text-gray-500 text-sm">Creado: {{ data.created_at }}</p>
+        <p class="text-gray-500 text-sm">Actualizado: {{ data.updated_at }}</p>
+        <hr class="mt-2 mb-2">
+        <button class="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            Comprar ahora <i class="fa-solid fa-cart-shopping"></i>
+        </button>
+    </div>
+
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">{{r_count}} reseñas</h2>
+        <ul>
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div class="bg-gray-100 rounded-lg shadow-md p-4 mt-4">
+                        <p class="text-gray-700 mb-2"><i class="fa-solid fa-star"></i> {{ review.rating }}</p>
+                        <p class="text-gray-600">{{ review.comment }}</p>
+                        <p class="text-gray-500 text-sm">
+                            <i class="fa-solid fa-calendar"></i> Creado: {{ review.created_at }}
+                        </p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+    <div class="mt-8 w-full">
+        <h2>Escribir reseña</h2>
+        {% if token %}
+            <div class="w-full max-w-md mx-auto">
+                <form action="/submit_review" method="POST" class="bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4">
+                    <input type="hidden" name="product_id" value="{{ product_id }}">
+                    <input type="hidden" name="user_id" value="{{ user_id }}">
+                    
+                    <div class="mb-4">
+                        <label for="rating" class="block text-gray-700 font-bold mb-2">Calificación:</label>
+                        <select id="rating" name="rating" class="border border-gray-300 rounded-md p-2 w-full">
+                            <option value="1">1 - Muy malo</option>
+                            <option value="2">2 - Malo</option>
+                            <option value="3">3 - Regular</option>
+                            <option value="4">4 - Bueno</option>
+                            <option value="5">5 - Excelente</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label for="comment" class="block text-gray-700 font-bold mb-2">Comentario:</label>
+                        <textarea id="comment" name="comment" rows="4" class="border border-gray-300 rounded-md p-2 w-full"></textarea>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">Enviar Reseña</button>
+                    </div>
+                </form>
+            </div>
+        {% else %}
+            <p class="text-xl font-bold">Debes iniciar sesión para escribir una reseña</p>
+        {% endif %}
+
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'index.html' %}
+
+{% block title %}Productos de {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="mx-auto p-4">
+    <!-- Formulario para añadir nuevos productos -->
+    <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-2">Añadir Nuevo Producto</h2>
+        <form action="/products/create" method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nombre</label>
+                <input type="text" name="name" id="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+            </div>
+            <div class="mb-4">
+                <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Descripción</label>
+                <input type="text" name="description" id="description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+            </div>
+            <div class="mb-4">
+                <label for="price" class="block text-gray-700 text-sm font-bold mb-2">Precio</label>
+                <input type="text" name="price" id="price" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+            </div>
+            <div class="mb-4">
+                <label for="stock" class="block text-gray-700 text-sm font-bold mb-2">Stock</label>
+                <input type="number" name="stock" id="stock" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+            </div>
+            <div class="mb-4">
+                <label for="category_id" class="block text-gray-700 text-sm font-bold mb-2">ID de Categoría</label>
+                <input type="number" name="category_id" id="category_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+            </div>
+            <div class="flex items-center justify-between">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Añadir Producto</button>
+            </div>
+        </form>
+    </div>
+    <!--Table-->
+    <h1 class="text-2xl font-bold mb-4">{{products_count}} productos registrados</h1>
+    <table class="min-w-full w-full rounded-lg shadow-md bg-white border border-gray-200">
+        <thead>
+            <tr>
+                <th class="py-2 px-4 border-b">ID</th>
+                <th class="py-2 px-4 border-b">Nombre</th>
+                <th class="py-2 px-4 border-b">Precio</th>
+                <th class="py-2 px-4 border-b">Stock</th>
+                <th class="py-2 px-4 border-b">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr class="text-center"> 
+                <td class="py-2 px-4 border-b">{{ product.id }}</td>
+                <td class="py-2 px-4 border-b">{{ product.name }}</td>
+                <td class="py-2 px-4 border-b">${{ product.price }}</td>
+                <td class="py-2 px-4 border-b">{{ product.stock }}</td>
+                <td class="py-2 px-4 border-b">
+                    <button data-modal-target="editModal-{{ product.id }}" data-modal-toggle="editModal-{{ product.id }}" class="text-blue-600 bg-gray-600 hover:underline">
+                        <i class="fa-solid fa-pen-to-square"></i> Editar
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!--Modals--> 
+    {% for product in products %}
+    <div id="editModal-{{ product.id }}" tabindex="-1" class="hidden overflow-y-auto fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full">
+        <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="flex justify-between items-start p-4 rounded-t border-b dark:border-gray-600">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        <i>{{product.name}}</i>
+                    </h3>
+                    
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="editModal-{{ product.id }}">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>  
+                    </button>
+                </div>
+                
+                <form action="/products/{{ product.id }}" method="post" class="p-6 space-y-6">
+                    <h4>
+                        Modo de edición
+                    </h4>
+                    <div>
+                        <label for="name-{{ product.id }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+                        <input type="text" name="name" id="name-{{ product.id }}" value="{{ product.name }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                    </div>
+                    <div>
+                        <label for="description-{{ product.id }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
+                        <input type="text" name="description" id="description-{{ product.id }}" value="{{ product.description }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                    </div>
+                    <div>
+                        <label for="price-{{ product.id }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Precio</label>
+                        <input type="text" name="price" id="price-{{ product.id }}" value="{{ product.price }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                    </div>
+                    <div>
+                        <label for="stock-{{ product.id }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stock</label>
+                        <input type="number" name="stock" id="stock-{{ product.id }}" value="{{ product.stock }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required>
+                    </div>
+                    <div class="flex justify-end space-x-4 mt-4">
+                        <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <i class="fa-solid fa-floppy-disk"></i> Guardar cambios
+                        </button>
+                        <button type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600" data-modal-toggle="editModal-{{ product.id }}">Cancelar</button>
+                    </div>
+                </form>
+                <div class="p-6 border-t border-gray-200 dark:border-gray-600">
+                    <h3 class="text-lg font-medium text-red-800">
+                        Zona de Peligro
+                    </h3>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Eliminar un producto es una acción que no se puede deshacer.
+                    </p>
+                    <div class="mt-4 flex justify-end  border border-red-600 rounded-lg p-4">
+                        <form action="/products/{{ product.id }}" method="post" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este producto?');">
+                            <input type="hidden" name="_method" value="delete">
+                            <button type="submit" class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                <i class="fa-solid fa-delete-left"></i> Eliminar Producto
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

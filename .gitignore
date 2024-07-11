@@ -1,0 +1,7 @@
+# Ignore Python virtual environments
+api/env/
+client/env/
+
+# Ignore Node.js modules
+api/node_modules/
+client/node_modules/
